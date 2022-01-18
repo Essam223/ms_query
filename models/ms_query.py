@@ -19,8 +19,7 @@ class MsQuery(models.Model):
             msg = _("Please set your timezone in Users menu.")
             raise RedirectWarning(msg, action.id, _("Go to Users menu"))
         return pytz.UTC.localize(datetime.now()).astimezone(timezone(self.env.user.tz))
-    
-    @api.multi
+
     def execute_query(self):
         if not self.name :
             return
@@ -34,10 +33,10 @@ class MsQuery(models.Model):
             result = self._cr.dictfetchall()
             if result :
                 self.result = '\n\n'.join(str(res) for res in result)
-            else :
+            else:
                 self.result = "Data not found"
         elif prefix == 'UPDATE' :
             self.result = '%d row(s) affected'%(self._cr.rowcount)
         else :
             self.result = 'Successful'
-        self.message_post('%s<br><br>Executed on %s'%(self.name,str(self.get_real_datetime())[:19]))
+        self.message_post(body='%s<br><br>Executed on %s'%(self.name,str(self.get_real_datetime())[:19]))
